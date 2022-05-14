@@ -53,7 +53,7 @@ def push_value(history_requests, value):
 f_data = open('data.txt', 'w')
 f_answer = open('answers.txt', 'w')
 
-for j in range(3):
+for j in range(5):
     cash_hit = 0
 
     size_cache = int(input('Enter len cache '))
