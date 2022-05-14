@@ -56,17 +56,17 @@ f_answer = open('answers.txt', 'w')
 for j in range(3):
     cash_hit = 0
 
-    size_cache = int(input('Enter len cache'))
+    size_cache = int(input('Enter len cache '))
     history_requests = [-1] * 3
     cache = [[-1, history_requests] for i in range(size_cache)]
 
-    number_requests = int(input('Enter number of requests'))
-    max_number = int(input('Enter max number request'))
+    number_requests = int(input('Enter number of requests '))
+    max_number = int(input('Enter max number request '))
     numbers = []
     for i in range(number_requests):
         numbers.append(rnd.randint(0, max_number))
 
-    f_data.write(str(size_cache) + ' ' + str(number_requests) + (' '.join(map(str, numbers))) + '\n')
+    f_data.write(str(size_cache) + ' ' + str(number_requests) + ' ' + (' '.join(map(str, numbers))) + '\n')
 
     for i in range(number_requests):
         index = find_same_request(cache, numbers[i])
