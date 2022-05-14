@@ -23,4 +23,6 @@ int main() {
   printf("Hits: %d\n", hits);
   printf("Working hours: %f\n", difftime(end, start) / (CLOCKS_PER_SEC));
   printf("Probability of hitting the cache: %f\n", (float)hits / number_pages);
+  
+  return 0;
 }
