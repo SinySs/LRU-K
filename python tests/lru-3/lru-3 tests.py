@@ -66,8 +66,7 @@ for j in range(3):
     for i in range(number_requests):
         numbers.append(rnd.randint(0, max_number))
 
-    f_data.write(str(j + 1) + '. ' + str(size_cache) + ' ' + str(number_requests) + '\n   ' + (
-        ' '.join(map(str, numbers))) + '\n')
+    f_data.write(str(size_cache) + ' ' + str(number_requests) + (' '.join(map(str, numbers))) + '\n')
 
     for i in range(number_requests):
         index = find_same_request(cache, numbers[i])
@@ -85,7 +84,7 @@ for j in range(3):
             history_requests = [i, -1, -1]
             cache.insert(lru_index, [numbers[i], history_requests])
 
-    f_answer.write((str(j + 1) + '. ' + str(cash_hit) + '\n'))
+    f_answer.write(str(cash_hit) + '\n')
 
     print(cash_hit)
 
