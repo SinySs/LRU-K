@@ -1,7 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctime.h>
+#include <time.h>
 
 #include "LRU_K.h"
 
