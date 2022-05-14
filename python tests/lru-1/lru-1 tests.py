@@ -27,20 +27,20 @@ def find_empty_cell(cache):
 f_data = open('data.txt', 'w')
 f_answer = open('answers.txt', 'w')
 
-for j in range(3):
-    size_cache = rnd.randint(2, 25)
-    number_requests = rnd.randint(2 * size_cache, 10 * size_cache)
+for j in range(25):
+    cash_hit = 0
 
+    size_cache = int(input('Enter len cache'))
+    cache = [[-1, 0] for i in range(size_cache)]
+
+    number_requests = int(input('Enter number of requests'))
+    max_number = int(input('Enter max number request'))
     numbers = []
     for i in range(number_requests):
-        numbers.append(rnd.randint(0, 10))
+        numbers.append(rnd.randint(0, max_number))
 
     f_data.write(str(j + 1) + '. ' + str(size_cache) + ' ' + str(number_requests) + '\n   ' + (
         ' '.join(map(str, numbers))) + '\n')
-
-    cache = [[-1, 0] for i in range(size_cache)]
-
-    cash_hit = 0
 
     for i in range(number_requests):
         index = find_same_request(cache, numbers[i])
