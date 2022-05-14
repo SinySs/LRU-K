@@ -5,8 +5,6 @@
 #include <ctype.h>
 #include <string.h>
 
-#define K 1
-
 enum ERRORS {
   RECREATING_LIST,
   NULLPTR,
@@ -49,7 +47,7 @@ int hash_map_resize_up(struct hash_map *table);
 int hash_map_resize_up_to_value(struct hash_map *table, const int value);
 
 int hash_map_insert(struct hash_map *table, int value, int time, int status,
-                    struct list_elem *cache_elem);
+                    struct list_elem *cache_elem, int K);
 
 int SetStatus(struct hash_map *table, const int value, const int st);
 
