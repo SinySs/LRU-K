@@ -14,7 +14,8 @@ int main() {
 
   hits = lru_k(len_cache, number_pages, K);
 
-  printf("%d", hits);
+  printf("%d\n", hits);
+
 
   return 0;
 }

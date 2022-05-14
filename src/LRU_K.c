@@ -18,7 +18,7 @@ struct list_elem *push_elem_first(struct list_LRU *cache,
   } else if(cache->list->size < len_cache){
     new_elem = push_tail(cache->list, page);
   } else {
-    new_elem = push_before(cache->list, cache->inf, page);
+      new_elem = push_before(cache->list, cache->inf, page);
   }
   cache->inf = new_elem;
 
@@ -149,7 +149,9 @@ int lru_k(int len_cache, int number_pages, int K) {
   len_hash_table = relative_hash_table_size * number_pages;
 
   cache = create_list_LRU();
+
   hash_map_construct(table, 20);
+
 
   for (int count_pages = 0; count_pages < number_pages; count_pages++) {
     read_number(&page);
@@ -157,7 +159,9 @@ int lru_k(int len_cache, int number_pages, int K) {
     hits += LRU_step(cache, table, page, count_pages, len_cache, K);
 
 
+
     //print_list(cache->list);
+
 
   }
 
