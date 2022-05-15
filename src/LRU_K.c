@@ -9,16 +9,16 @@ int check_INF_status(struct hash_map *table, int page, int k) {
 
 struct list_elem *push_elem_first(struct list_LRU *cache,
                                   struct hash_map *table, int page,
-                                  int len_cache) {
+                                  int len_cache, int k) {
   struct list_elem *new_elem;
   if (cache->inf == NULL) {
     new_elem = push_tail(cache->list, page);
   } else if(table->hash_table[cache->list->head->data].history->size == 1) {
     new_elem = push_head(cache->list, page);
-  } else if(cache->list->size < len_cache){
+  } else if(cache->list->size < len_cache && table->hash_table[cache->inf->data].history->size == k){
     new_elem = push_tail(cache->list, page);
   } else {
-    new_elem = push_before(cache->list, cache->inf, page);
+      new_elem = push_before(cache->list, cache->inf, page);
   }
   cache->inf = new_elem;
 
@@ -70,7 +70,7 @@ int LRU_step(struct list_LRU *cache, struct hash_map *table, int page,
   assert(table);
 
   if (check_if_in_hash_map(table, page) == OUT) {
-    struct list_elem *new_elem = push_elem_first(cache, table, page, len_cache);
+    struct list_elem *new_elem = push_elem_first(cache, table, page, len_cache, K);
     hash_map_insert(table, page, page_num, IN, new_elem, K);
     return 0;
 
@@ -81,7 +81,7 @@ int LRU_step(struct list_LRU *cache, struct hash_map *table, int page,
 
       if (check_if_in_cache(table, page) == OUT) {
         struct list_elem *new_elem =
-            push_elem_first(cache, table, page, len_cache);
+            push_elem_first(cache, table, page, len_cache, K);
         table->hash_table[page].cache_elem = new_elem;
         table->hash_table[page].status = IN;
         return 0;
@@ -149,15 +149,18 @@ int lru_k(int len_cache, int number_pages, int K) {
   len_hash_table = relative_hash_table_size * number_pages;
 
   cache = create_list_LRU();
-  hash_map_construct(table, 20);
+
+  hash_map_construct(table, 10);
+
 
   for (int count_pages = 0; count_pages < number_pages; count_pages++) {
     read_number(&page);
 
+    printf("ENTER: %d\n ", page);
     hits += LRU_step(cache, table, page, count_pages, len_cache, K);
+    print_list(cache->list);
+    printf("INF: %d\n", cache->inf->data);
 
-
-    //print_list(cache->list);
 
   }
 
