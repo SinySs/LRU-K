@@ -29,7 +29,7 @@ int hash_map_destruct(struct hash_map *table) {
 
   for (int i = 0; i < table->size; i++) {
     if (table->hash_table[i].history != NULL)
-        delete_list(table->hash_table[i].history);
+      delete_list(table->hash_table[i].history);
   }
 
   free(table->hash_table);
@@ -42,11 +42,11 @@ int hash_map_insert(struct hash_map *table, int value, int time, int status,
   assert(table);
 
   if (table->size == table->capacity - 1) {
-    hash_map_resize_up_to_value(table, value);
+    hash_map_resize_up(table);
   }
 
   if (value >= table->capacity) {
-    hash_map_resize_up(table);
+    hash_map_resize_up_to_value(table, value);
   }
 
   table->hash_table[value].history = create_list();
@@ -77,15 +77,14 @@ int hash_map_resize_up(struct hash_map *table) {
 int hash_map_resize_up_to_value(struct hash_map *table, const int value) {
   assert(table);
 
-  void *ptr = realloc(table->hash_table,
-                      table->capacity * 2 * sizeof(struct hash_elem *));
+  table->capacity = value + 1;
+
+  void *ptr =
+      realloc(table->hash_table, table->capacity * sizeof(struct hash_elem));
   if (ptr == NULL)
     return ALLOC_FAILED;
 
   table->hash_table = (struct hash_elem *)ptr;
-
-  table->capacity = value + 1;
-
 
   return OK;
 }
@@ -123,4 +122,3 @@ int check_if_in_cache(struct hash_map *table, const int value) {
 
   return table->hash_table[value].status;
 }
-
