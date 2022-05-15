@@ -4,19 +4,49 @@
 
 #include "LRU_K.h"
 
-#define K 1
+#define K 4
 
 int main() {
   int hits, len_cache, number_pages, answer;
 
-  for (int i = 0; i < 5; i++) {
-    read_number(&len_cache);
-    read_number(&number_pages);
+  FILE *answers = fopen("../python tests/lru-1/answers.txt", "r");
+  FILE *data = fopen("../python tests/lru-1/data.txt", "r");
 
-    hits = lru_k(len_cache, number_pages, K);
-
-    printf("%d", hits);
+  switch (K) {
+  case 1:
+    answers = fopen("../python tests/lru-1/answers.txt", "r");
+    data = fopen("../python tests/lru-1/data.txt", "r");
+    break;
+  case 2:
+    answers = fopen("../python tests/lru-2/answers.txt", "r");
+    data = fopen("../python tests/lru-2/data.txt", "r");
+    break;
+  case 3:
+    answers = fopen("../python tests/lru-3/answers.txt", "r");
+    data = fopen("../python tests/lru-3/data.txt", "r");
+    break;
+  default:
+    printf("Tests not exist!\n");
+    abort();
+    break;
   }
+
+  for (int i = 0; i < 5; i++) {
+    fscanf(answers, "%d", &answer);
+
+    fscanf(data, "%d", &len_cache);
+    fscanf(data, "%d", &number_pages);
+
+    hits = lru_k(len_cache, number_pages, K, data);
+
+    if (hits == answer)
+      printf("Congratulations!\n");
+    else
+      printf("Failed!\n");
+  }
+
+  fclose(answers);
+  fclose(data);
 
   return 0;
 }

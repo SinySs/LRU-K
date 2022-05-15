@@ -6,9 +6,9 @@
 
 #define relative_hash_table_size 0.1
 
-int read_number(int *number);
+int read_number(int *number, FILE *data);
 
-int lru_k(int len_cache, int number_pages, int K);
+int lru_k(int len_cache, int number_pages, int K, FILE *data);
 
 struct list_LRU {
   struct List *list;

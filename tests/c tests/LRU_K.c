@@ -13,9 +13,9 @@ struct list_elem *push_elem_first(struct list_LRU *cache,
   struct list_elem *new_elem;
   if (cache->inf == NULL) {
     new_elem = push_tail(cache->list, page);
-  } else if(table->hash_table[cache->list->head->data].history->size == 1) {
+  } else if (table->hash_table[cache->list->head->data].history->size == 1) {
     new_elem = push_head(cache->list, page);
-  } else if(cache->list->size < len_cache){
+  } else if (cache->list->size < len_cache) {
     new_elem = push_tail(cache->list, page);
   } else {
     new_elem = push_before(cache->list, cache->inf, page);
@@ -88,10 +88,10 @@ int LRU_step(struct list_LRU *cache, struct hash_map *table, int page,
 
       } else {
 
-        if(K == 1) {
-            insert_elem(cache->list, table->hash_table[page].cache_elem,
-                    cache->list->head);
-            return 1;
+        if (K == 1) {
+          insert_elem(cache->list, table->hash_table[page].cache_elem,
+                      cache->list->head);
+          return 1;
         }
         if (cache->inf->data == table->hash_table[page].cache_elem->data)
           return 1;
@@ -139,7 +139,7 @@ int LRU_step(struct list_LRU *cache, struct hash_map *table, int page,
   return 0;
 }
 
-int lru_k(int len_cache, int number_pages, int K) {
+int lru_k(int len_cache, int number_pages, int K, FILE *data) {
   int len_hash_table, page, hits;
   struct list_LRU *cache;
   struct hash_map *table =
@@ -152,13 +152,11 @@ int lru_k(int len_cache, int number_pages, int K) {
   hash_map_construct(table, 20);
 
   for (int count_pages = 0; count_pages < number_pages; count_pages++) {
-    read_number(&page);
+    read_number(&page, data);
 
     hits += LRU_step(cache, table, page, count_pages, len_cache, K);
 
-
-    //print_list(cache->list);
-
+    // print_list(cache->list);
   }
 
   destruct_list_LRU(cache);
@@ -167,10 +165,10 @@ int lru_k(int len_cache, int number_pages, int K) {
   return hits;
 }
 
-int read_number(int *number) {
+int read_number(int *number, FILE *data) {
   int scan;
 
-  scan = scanf("%d", number);
+  scan = fscanf(data, "%d", number);
 
   assert(scan && "Input Error");
 
