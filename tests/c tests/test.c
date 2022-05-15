@@ -4,7 +4,7 @@
 
 #include "LRU_K.h"
 
-#define K 4
+#define K 3
 
 int main() {
   int hits, len_cache, number_pages, answer;
@@ -32,10 +32,10 @@ int main() {
   }
 
   for (int i = 0; i < 5; i++) {
-    fscanf(answers, "%d", &answer);
+    read_number(&answer, answers);
 
-    fscanf(data, "%d", &len_cache);
-    fscanf(data, "%d", &number_pages);
+    read_number(&len_cache, data);
+    read_number(&number_pages, data);
 
     hits = lru_k(len_cache, number_pages, K, data);
 
