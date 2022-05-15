@@ -74,13 +74,15 @@ int hash_map_resize_up(struct hash_map *table) {
 
   table->hash_table = (struct hash_elem *)ptr;
   table->capacity *= 2;
+  for(int i = table->capacity / 2; i < table->capacity; i++)
+    table->hash_table[i].history = NULL;
 
   return OK;
 }
 
 int hash_map_resize_up_to_value(struct hash_map *table, const int value) {
   assert(table);
-
+  int old_capp = table->capacity;
   table->capacity = value + 1;
 
   void *ptr = realloc(table->hash_table,
@@ -89,6 +91,8 @@ int hash_map_resize_up_to_value(struct hash_map *table, const int value) {
     return ALLOC_FAILED;
 
   table->hash_table = (struct hash_elem *)ptr;
+  for(int i = old_capp; i < table->capacity; i++)
+    table->hash_table[i].history = NULL;
 
   return OK;
 }
