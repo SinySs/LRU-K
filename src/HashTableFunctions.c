@@ -41,12 +41,16 @@ int hash_map_insert(struct hash_map *table, int value, int time, int status,
                     struct list_elem *cache_elem, int K) {
   assert(table);
 
-  if (table->size == table->capacity - 1) {
+  /*if (table->size == table->capacity - 1) {
     hash_map_resize_up(table);
-  }
+  }*/
 
   if (value >= table->capacity) {
     hash_map_resize_up_to_value(table, value);
+  }
+
+  if (table->size == table->capacity - 1) {
+    hash_map_resize_up(table);
   }
 
   table->hash_table[value].history = create_list();
@@ -92,12 +96,13 @@ int hash_map_resize_up_to_value(struct hash_map *table, const int value) {
 int check_if_in_hash_map(struct hash_map *table, int value) {
   assert(table);
 
-  if (value >= table->capacity)
+  if (value >= table->capacity) {
     return OUT;
+  }
 
-  if (table->hash_table[value].history == NULL)
+  if (table->hash_table[value].history == NULL){
     return OUT;
-
+  }
   if (table->hash_table[value].history->size == 0) {
     return OUT;
   }
