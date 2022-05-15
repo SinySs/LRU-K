@@ -39,8 +39,6 @@ for j in range(5):
     for i in range(number_requests):
         numbers.append(rnd.randint(0, max_number))
 
-    size_cache = rnd.randint(2, 27)
-
     f_data.write(str(size_cache) + ' ' + str(number_requests) + ' ' + (' '.join(map(str, numbers))) + '\n')
 
     for i in range(number_requests):
