@@ -4,7 +4,7 @@
 
 #include "LRU_K.h"
 
-#define K 1
+#define K 2
 
 int main() {
   int hits, len_cache, number_pages;
@@ -15,7 +15,6 @@ int main() {
   hits = lru_k(len_cache, number_pages, K);
 
   printf("%d\n", hits);
-
 
   return 0;
 }
