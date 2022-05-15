@@ -16,7 +16,7 @@ struct list_elem *push_elem_first(struct list_LRU *cache,
   } else if(table->hash_table[cache->list->head->data].history->size == 1) {
     new_elem = push_head(cache->list, page);
   } else if(cache->list->size < len_cache && table->hash_table[cache->inf->data].history->size == k){
-    new_elem = push_tail(cache->list, page);
+    new_elem = push_after(cache->list, cache->inf, page);
   } else {
       new_elem = push_before(cache->list, cache->inf, page);
   }
@@ -123,11 +123,19 @@ int LRU_step(struct list_LRU *cache, struct hash_map *table, int page,
 
       } else {
         struct list_elem *search = search_place(cache, table, page);
-        if (search->data == table->hash_table[page].cache_elem->data)
+        if (search->data == table->hash_table[page].cache_elem->data) {
+          if(table->hash_table[page].cache_elem->data == cache->inf->data && table->hash_table[page].cache_elem->data != cache->list->tail->data)
+            cache->inf = cache->inf->next;
           return 1;
+        }
 
-        if (cache->inf->data == table->hash_table[page].cache_elem->data)
-          cache->inf = cache->inf->prev;
+        if (cache->inf->data == table->hash_table[page].cache_elem->data) {
+          if(table->hash_table[page].cache_elem->data == cache->inf->data && table->hash_table[page].cache_elem->data != cache->list->tail->data) {
+            cache->inf = cache->inf->next;
+          } else{
+            cache->inf = cache->inf->prev;
+          }
+        }
 
         insert_elem(cache->list, table->hash_table[page].cache_elem, search);
         return 1;
@@ -150,7 +158,7 @@ int lru_k(int len_cache, int number_pages, int K) {
 
   cache = create_list_LRU();
 
-  hash_map_construct(table, 10);
+  hash_map_construct(table, 100);
 
 
   for (int count_pages = 0; count_pages < number_pages; count_pages++) {
