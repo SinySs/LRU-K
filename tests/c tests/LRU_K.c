@@ -7,6 +7,22 @@ int check_INF_status(struct hash_map *table, int page, int k) {
   return 1;
 }
 
+void correct_len(struct list_LRU *cache, struct hash_map *table,
+                 int len_cache) {
+  if (cache->list->size > len_cache) {
+    table->hash_table[cache->list->tail->data].status = OUT;
+    if (cache->list->tail->data == cache->inf->data)
+      cache->inf = cache->inf->prev;
+
+    delete_tail(cache->list);
+  }
+  return;
+}
+
+int determ_size(int page_num) {
+  return page_num * relative_hash_table_size + 10;
+}
+
 struct list_elem *push_elem_first(struct list_LRU *cache,
                                   struct hash_map *table, int page,
                                   int len_cache, int k) {
@@ -22,11 +38,7 @@ struct list_elem *push_elem_first(struct list_LRU *cache,
     new_elem = push_before(cache->list, cache->inf, page);
   }
   cache->inf = new_elem;
-
-  if (cache->list->size > len_cache) {
-    table->hash_table[cache->list->tail->data].status = OUT;
-    delete_tail(cache->list);
-  }
+  correct_len(cache, table, len_cache);
 
   return new_elem;
 }
@@ -101,10 +113,8 @@ int LRU_step(struct list_LRU *cache, struct hash_map *table, int page,
         insert_elem(cache->list, table->hash_table[page].cache_elem,
                     cache->inf);
         cache->inf = cache->inf->prev;
-        if (cache->list->size > len_cache) {
-          table->hash_table[cache->list->tail->data].status = OUT;
-          delete_tail(cache->list);
-        }
+
+        correct_len(cache, table, len_cache);
         return 1;
       }
 
@@ -115,12 +125,7 @@ int LRU_step(struct list_LRU *cache, struct hash_map *table, int page,
         table->hash_table[page].cache_elem = new_elem;
         table->hash_table[page].status = IN;
 
-        if (cache->list->size > len_cache) {
-          table->hash_table[cache->list->tail->data].status = OUT;
-          if (cache->list->tail->data == cache->inf->data)
-            cache->inf = cache->inf->prev;
-          delete_tail(cache->list);
-        }
+        correct_len(cache, table, len_cache);
         return 0;
 
       } else {
@@ -160,19 +165,16 @@ int lru_k(int len_cache, int number_pages, int K, FILE *data) {
       (struct hash_map *)calloc(1, sizeof(struct hash_map));
   hits = 0;
 
-  len_hash_table = relative_hash_table_size * number_pages;
+  len_hash_table = determ_size(number_pages);
 
   cache = create_list_LRU();
 
-  hash_map_construct(table, 100);
+  hash_map_construct(table, len_hash_table);
 
   for (int count_pages = 0; count_pages < number_pages; count_pages++) {
     read_number(&page, data);
 
-    // printf("ENTER: %d\n ", page);
     hits += LRU_step(cache, table, page, count_pages, len_cache, K);
-    // print_list(cache->list);
-    // printf("INF: %d\n", cache->inf->data);
   }
 
   destruct_list_LRU(cache);
