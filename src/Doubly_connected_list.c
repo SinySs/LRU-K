@@ -164,7 +164,6 @@ void delete_elem(struct List *list, struct list_elem *elem) {
   free(elem);
 }
 
-//! insert first elem from list before second
 void insert_elem(struct List *list, struct list_elem *first,
                  struct list_elem *second) {
   if (second->data == first->data)
@@ -219,10 +218,8 @@ void print_list(struct List *list) {
     printf("%d ", current->data);
     current = current->next;
   }
-
-  printf("\nEnd of printing list.\n");
-
   printf("Head: %d Tail: %d\n", list->head->data, list->tail->data);
+  printf("\nEnd of printing list.\n");
 }
 #ifdef Test
 int main() {
