@@ -4,7 +4,7 @@
 
 #include "LRU_K.h"
 
-#define K 3
+#define K 2
 
 int main() {
   int hits, len_cache, number_pages;
