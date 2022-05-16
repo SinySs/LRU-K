@@ -16,6 +16,8 @@ def update_history(value, number_request, history):
 def find_victim(cache, history):
     for i in range(len(cache)):
         cache_elem = cache[i]
+        if cache_elem < 0:
+            return i
         if history[cache_elem][-1] < 0:
             return i
     return -1
