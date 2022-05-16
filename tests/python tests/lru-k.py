@@ -13,13 +13,6 @@ def update_history(value, number_request, history):
     return history
 
 
-def is_free_space(cache):
-    for i in range(len(cache)):
-        if cache[i] < 0:
-            return i
-    return -1
-
-
 def find_victim(cache, history):
     for i in range(len(cache)):
         cache_elem = cache[i]
@@ -36,17 +29,26 @@ def is_inf(value, history):
 
 def find_less_request(cache, history, value):
     lrv_number = history[value][-1]
-    for i in range(len(cache)):
-        lrce_number = history[cache[i]][-1]
-        if 0 <= lrce_number < lrv_number:
+    lrce_number = history[cache[0]][-1]
+    if lrv_number >= lrce_number:
+        return 0
+
+    for i in range(1, len(cache)):
+        lrce_number_c = history[cache[i - 1]][-1]
+        lrce_number_n = history[cache[i]][-1]
+
+        if lrce_number_n <= lrv_number < lrce_number_c:
             return i
+        if lrce_number_n < 0:
+            return i
+
     return -1
 
 
 f_data = open('data.txt', 'w')
 f_answer = open('answers.txt', 'w')
 
-k = 2
+k = 3
 
 for j in range(5):
     cash_hit = 0
@@ -54,9 +56,9 @@ for j in range(5):
     # size_cache = 4
     # cache = [-1] * size_cache
     #
-    # number_requests = 20
-    # max_number = 8
-    # numbers = list(map(int, '5 1 2 3 4 1 5 2 1 2 1 2 5 2 5 4 2 4 5 1'.split()))
+    # number_requests = 12
+    # max_number = 5
+    # numbers = list(map(int, '1 2 3 4 1 2 5 1 2 4 3 4'.split()))
 
     size_cache = int(input('Enter len cache '))
     cache = [-1] * size_cache
@@ -75,47 +77,25 @@ for j in range(5):
     for i in range(number_requests):
         number = numbers[i]
         history = update_history(number, i, history)
-        print(number)
         if number in cache:
-            cache.pop(cache.index(number))
-            cache.insert(0, number)
             cash_hit += 1
-            print(cache)
-            continue
-        if is_free_space(cache) >= 0:
+            if is_inf(number, history):
+                index = find_victim(cache, history)
+                cache.pop(cache.index(number))
+                cache.insert(index, number)
+            else:
+                index = find_less_request(cache, history, number)
+                cache.pop(cache.index(number))
+                cache.insert(index, number)
+        else:
             if is_inf(number, history):
                 index = find_victim(cache, history)
                 cache.insert(index, number)
                 cache.pop()
             else:
-                cache.insert(0, number)
+                index = find_less_request(cache, history, number)
+                cache.insert(index, number)
                 cache.pop()
-        else:
-            if find_victim(cache, history) >= 0:
-                index_inf = find_victim(cache, history)
-                index_k = find_less_request(cache, history, number)
-                if 0 <= index_k < index_inf:
-                    cache.insert(index_k, number)
-                else:
-                    cache.insert(index_inf, number)
-                cache.pop()
-            else:
-                if is_inf(number, history):
-                    cache.insert(-1, number)
-                    cache.pop()
-                    print(cache)
-                    continue
-                else:
-                    index = find_less_request(cache, history, number)
-                    if index >= 0:
-                        cache.insert(index, number)
-                        cache.pop()
-                    else:
-                        cache.insert(-1, number)
-                        cache.pop()
-                        print(cache)
-                        continue
-        print(cache)
 
     f_answer.write(str(cash_hit) + '\n')
 
