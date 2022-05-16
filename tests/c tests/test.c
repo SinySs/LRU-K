@@ -40,7 +40,6 @@ int main() {
     hits = lru_k(len_cache, number_pages, K, data);
 
     if (hits == answer) {
-      // printf("hits - %d\n", hits);
       printf("Congratulations!\n");
     } else
       printf("Failed!\n");

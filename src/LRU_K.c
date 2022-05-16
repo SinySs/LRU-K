@@ -7,6 +7,18 @@ int check_INF_status(struct hash_map *table, int page, int k) {
   return 1;
 }
 
+void correct_len(struct list_LRU *cache, struct hash_map *table, int len_cache)
+{
+  if (cache->list->size > len_cache) {
+    table->hash_table[cache->list->tail->data].status = OUT;
+    if (cache->list->tail->data == cache->inf->data)
+      cache->inf = cache->inf->prev;
+
+    delete_tail(cache->list);
+    }
+    return;
+}
+
 struct list_elem *push_elem_first(struct list_LRU *cache,
                                   struct hash_map *table, int page,
                                   int len_cache, int k) {
@@ -22,10 +34,11 @@ struct list_elem *push_elem_first(struct list_LRU *cache,
   }
   cache->inf = new_elem;
 
-  if (cache->list->size > len_cache) {
+  /*if (cache->list->size > len_cache) {
     table->hash_table[cache->list->tail->data].status = OUT;
     delete_tail(cache->list);
-  }
+  }*/
+  correct_len(cache, table, len_cache);
 
   return new_elem;
 }
@@ -99,10 +112,11 @@ int LRU_step(struct list_LRU *cache, struct hash_map *table, int page,
         insert_elem(cache->list, table->hash_table[page].cache_elem,
                     cache->inf);
         cache->inf = cache->inf->prev;
-        if (cache->list->size > len_cache) {
+        /*if (cache->list->size > len_cache) {
           table->hash_table[cache->list->tail->data].status = OUT;
           delete_tail(cache->list);
-        }
+        }*/
+        correct_len(cache, table, len_cache);
         return 1;
       }
 
@@ -113,12 +127,13 @@ int LRU_step(struct list_LRU *cache, struct hash_map *table, int page,
         table->hash_table[page].cache_elem = new_elem;
         table->hash_table[page].status = IN;
 
-        if (cache->list->size > len_cache) {
+        /*if (cache->list->size > len_cache) {
           table->hash_table[cache->list->tail->data].status = OUT;
           if (cache->list->tail->data == cache->inf->data)
             cache->inf = cache->inf->prev;
           delete_tail(cache->list);
-        }
+        }*/
+        correct_len(cache, table, len_cache);
         return 0;
 
       } else {
@@ -158,7 +173,7 @@ int lru_k(int len_cache, int number_pages, int K) {
 
   cache = create_list_LRU();
 
-  hash_map_construct(table, 100);
+  hash_map_construct(table, 2);
 
 
   for (int count_pages = 0; count_pages < number_pages; count_pages++) {
